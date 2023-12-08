@@ -34,3 +34,6 @@ lprint(latex(Eq(symbols('g'),g)))
 # Calculate uncertainty and print:
 dg = sqrt(g.diff(L)**2 * dL**2 + g.diff(T)**2 * dT**2)
 lprint(latex(Eq(symbols('sigma_g'), dg)))
+
+eval_g = lambdify(args=(T, L), expr=g)
+eval_eg = lambdify(args=(L, T, dL, dT), expr=dg)
