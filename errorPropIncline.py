@@ -12,8 +12,8 @@ def lprint(*args,**kwargs):
     """
     display(Latex('$$'+' '.join(args)+'$$'),**kwargs)
 
-g, a, D, d, theta, Delta= symbols("g, a, D, d, theta, Delta")
-dg, da, dD, dd, dtheta, dDelta = symbols("sigma_g, sigma_a, sigma_D, sigma_d, sigma_theta, sigma_Delta")
+g, a, arot, D, d, theta, Delta= symbols("g, a, arot, D, d, theta, Delta")
+dg, da, darot, dD, dd, dtheta, dDelta = symbols("sigma_g, sigma_a, sigma_arot, sigma_D, sigma_d, sigma_theta, sigma_Delta")
 
 
 # Perimeter:
@@ -34,6 +34,7 @@ lprint(latex(Eq(symbols('sigma_g'), dg)))
 
 eval_g = lambdify(args=(a, D, d, theta, Delta), expr=gexpr)
 eval_eg = lambdify(args=(g, a, D, d, theta, Delta, da, dD, dd, dtheta, dDelta), expr=dg)
+eval_ega = lambdify(args=(g, a, D, d, theta, Delta, da, dD, dd, dtheta, dDelta), expr=dga)
 eval_egD = lambdify(args=(g, a, D, d, theta, Delta, da, dD, dd, dtheta, dDelta), expr=dgD) 
 eval_egd = lambdify(args=(g, a, D, d, theta, Delta, da, dD, dd, dtheta, dDelta), expr=dgd) 
 eval_egtheta = lambdify(args=(g, a, D, d, theta, Delta, da, dD, dd, dtheta, dDelta), expr=dgtheta) 
@@ -47,6 +48,7 @@ lprint(latex(Eq(symbols('theta'),thetaexpr)))
 dgh = thetaexpr.diff(h) * dh
 dgl = thetaexpr.diff(l) * dl
 dthetaexpr = sqrt(dgh**2 + dgl**2)
+Deltaexpr = (a - arot)/(a + arot) * tan(theta)
 lprint(latex(Eq(symbols('sigma_theta'),dthetaexpr)))
 
 
@@ -54,3 +56,12 @@ eval_theta = lambdify(args=(h, l), expr=thetaexpr)
 eval_etheta = lambdify(args=(h,l,dh,dl), expr=dthetaexpr)
 eval_ethetah = lambdify(args=(h,l,dh,dl), expr=dgh)
 eval_ethetal = lambdify(args=(h,l,dh,dl), expr=dgl)
+
+dDeltaa = Deltaexpr.diff(a) * da
+dDeltaarot = Deltaexpr.diff(arot) * darot
+dDeltatheta = Deltaexpr.diff(theta) * dtheta
+dDelta = sqrt(dDeltaa**2 + dDeltaarot**2 + dDeltatheta**2)
+
+
+eval_Delta = lambdify(args=(a, arot, theta), expr=Deltaexpr)
+eval_eDelta = lambdify(args=(a, arot, theta, da, darot, dtheta), expr=dDelta)
