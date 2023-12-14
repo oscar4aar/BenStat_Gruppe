@@ -31,9 +31,15 @@ dg,dL,dT = symbols("sigma_g, sigma_L, sigma_T")
 g = L * ((2 * pi)/T)**2
 lprint(latex(Eq(symbols('g'),g)))
 
+# contribution of L and T
+delta_T = g.diff(T) * dT
+delta_L = g.diff(L) * dL
+
 # Calculate uncertainty and print:
 dg = sqrt(g.diff(L)**2 * dL**2 + g.diff(T)**2 * dT**2)
 lprint(latex(Eq(symbols('sigma_g'), dg)))
 
 eval_g = lambdify(args=(T, L), expr=g)
-eval_eg = lambdify(args=(L, T, dL, dT), expr=dg)
+eval_eg = lambdify(args=(T, L, dT, dL), expr=dg)
+eval_dT = lambdify(args=( T, L, dT, dL), expr=delta_T)
+eval_dL = lambdify(args=( T, L, dT, dL), expr=delta_L)
